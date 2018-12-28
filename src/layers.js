@@ -40,7 +40,7 @@ function triggerEventForLayer (eventName, enabledElement, layerId) {
  * target layer to a new scale.
  *
  * @param {EnabledElementLayer} baseLayer The base layer
- * @param {EnabledElementLayer} targetLayer The target layer to rescale
+ * @param {EnabledElementLayer} targetLayer The target layer to rescale * @param {EnabledElementLayer} targetLayer The target layer to rescale
  * @returns {void}
  * @memberof EnabledElementLayers
  */
@@ -59,6 +59,18 @@ export function rescaleImage (baseLayer, targetLayer) {
 
   // Column pixel spacing need to be considered when calculating the
   // ratio between the layer added and base layer images
+  if (targetLayer.options) {
+    if (targetLayer.options.preScaled) {
+      const colRelative = targetImage.width / baseImage.width;
+      const viewportRatio = targetLayer.viewport.scale / baseLayer.viewport.scale * colRelative;
+
+      targetLayer.viewport.scale = baseLayer.viewport.scale * viewportRatio;
+
+      return;
+
+    }
+  }
+
   const colRelative = (targetLayer.viewport.displayedArea.columnPixelSpacing * targetImage.width) /
                       (baseLayer.viewport.displayedArea.columnPixelSpacing * baseImage.width);
   const viewportRatio = targetLayer.viewport.scale / baseLayer.viewport.scale * colRelative;
